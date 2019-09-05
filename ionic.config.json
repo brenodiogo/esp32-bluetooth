@@ -1,5 +1,7 @@
 {
   "name": "esp32-bluetooth",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }
