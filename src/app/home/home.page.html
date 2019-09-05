@@ -9,4 +9,10 @@
 <ion-content>
   <ion-button expand="block" (click)="ativarBluetooth()">ativarBluetooth()</ion-button>
   <ion-button expand="block" (click)="listarBluetooth()">listarBluetooth()</ion-button>
+
+  <ion-list>
+    <ion-item *ngFor="let device of listOfBluetoothDevices">
+      <ion-label (click)="conectarComDispositivo(device.id)">{{device.name}}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
