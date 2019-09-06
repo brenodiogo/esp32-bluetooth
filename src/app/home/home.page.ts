@@ -1,8 +1,10 @@
 import { Component, ChangeDetectorRef } from "@angular/core";
 import { ToastController } from "@ionic/angular";
-// import { BluetoothSerial } from "@ionic-native/bluetooth-serial/ngx";
+import { BluetoothSerial } from "@ionic-native/bluetooth-serial/ngx";
 import { BLE } from "@ionic-native/ble/ngx";
 import { LoadingController } from "@ionic/angular";
+import { Router } from "@angular/router";
+import { BluetoothService } from '../services/bluetooth-service.service';
 
 @Component({
   selector: "app-home",
@@ -14,64 +16,65 @@ export class HomePage {
 
   constructor(
     public toastController: ToastController,
-    // public bluetoothSerial: BluetoothSerial,
+    public bluetoothSerial: BluetoothSerial,
     private ble: BLE,
     public loadingController: LoadingController,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private router: Router,
+    private bluetoothService: BluetoothService
   ) {}
 
   ativarBluetooth() {
     this.presentToast("Ativar Bluetooth Clicado");
-    this.ble.enable().then(
-      sucesso => {
-        this.presentToast("Ativar Bluetooth Sucesso" + sucesso);
+    this.bluetoothSerial.enable().then(
+      () => {
+        this.presentToast("Ativar Bluetooth Sucesso");
       },
-      error => {
-        this.presentToast("Ativar Bluetooth Erro " + error);
+      () => {
+        this.presentToast("Ativar Bluetooth Erro");
       }
     );
   }
 
-  async buscarBluetooth() {
+  async listarBluetooth() {
     const loader = await this.createLoader();
-    await loader.present();
-    this.listOfBluetoothDevices = [];
-
-    this.ble.scan([], 8).subscribe(
-      success => {
-        loader.dismiss();
-        this.presentToast("Obtive lista de Bluetooth com sucesso! " + success);
-        console.log("Sucess on bluetooth scan");
-        console.log(success);
-        this.listOfBluetoothDevices.push(success);
-        this.changeDetector.detectChanges();
-      },
-      error => {
-        loader.dismiss();
-        this.presentToast(error);
-        console.log(error);
-        this.presentToast("Não obtive lista de Bluetooth. " + error);
-        return error;
-      }
-    );
+    loader.present();
+    this.bluetoothSerial.list().then(success => {
+      loader.dismiss();
+      this.listOfBluetoothDevices = success;
+      this.presentToast("Obtive lista de Bluetooth com sucesso!");
+      console.log("Lista de Bluetooth");
+      console.log(success);
+    }, error => {
+      loader.dismiss();
+      this.presentToast(error);
+      console.error(error);
+      // return error;
+    });
   }
 
   async conectarComDispositivo(address: string) {
     const loader = await this.createLoader();
-    loader.present();
+    // loader.present();
+
     this.presentToast("Conectando com " + address);
-    this.ble.connect(address).subscribe(
-      success => {
-        loader.dismiss();
-        console.log("sucesso" + success);
-        this.presentToast(success);
-      },
-      async error => {
-        loader.dismiss();
-        console.log("erro" + error);
-        this.presentToast(error);
-      }
-    );
+    this.bluetoothService.setConnectedDevice(address);
+    this.router.navigate(["dispositivo"]);
+    // this.bluetoothSerial.connect(address).subscribe(
+    //   success => {
+    //     loader.dismiss();
+    //     console.log("sucesso em conexão");
+    //     console.log(success);
+    //     this.presentToast(success);
+    //   },
+    //   error => {
+    //     loader.dismiss();
+    //     console.error("erro" + error);
+    //     console.error(error);
+    //     console.log(error);
+    //     this.presentToast(error);
+    //   }
+    // );
   }
 
   async presentToast(message: string) {
@@ -107,53 +110,6 @@ export class HomePage {
 }
 // Bluetooth serial
 
-//  ativarBluetooth() {
-//   this.presentToast("Ativar Bluetooth Clicado");
-//   this.bluetoothSerial.enable().then(
-//     () => {
-//       this.presentToast("Ativar Bluetooth Sucesso");
-//     },
-//     () => {
-//       this.presentToast("Ativar Bluetooth Erro");
-//     }
-//   );
-// }
-
-// async listarBluetooth() {
-//   const loader = await this.presentLoading();
-//   await loader.present();
-//   try {
-//     const listOfBluetoothDevices = await this.bluetoothSerial.list();
-//     this.listOfBluetoothDevices = listOfBluetoothDevices;
-//     this.presentToast("Obtive lista de Bluetooth com sucesso!");
-//   } catch (error) {
-//     this.presentToast(error);
-//     return error;
-//   } finally {
-//     await loader.dismiss();
-//   }
-// }
-
-// async conectarComDispositivo(address: string) {
-//   const loader = await this.presentLoading();
-//   await loader.present();
-//   this.presentToast("Conectando com " + address);
-//   this.bluetoothSerial
-//     .connect(address)
-//     .subscribe(
-//       async success => {
-//         await loader.dismiss();
-//         console.log("sucesso" + success);
-//         this.presentToast(success);
-//       },
-//       async error => {
-//         await loader.dismiss();
-//         console.log("erro" + error);
-//         this.presentToast(error);
-//       }
-//     );
-// }
-
 // let connectCallback = (data) => {
 //   console.log(data);
 //   loader.dismiss();
@@ -162,3 +118,59 @@ export class HomePage {
 //   console.log(error);
 //   loader.dismiss();
 // };
+
+// BLE
+// ativarBluetooth() {
+//   this.presentToast("Ativar Bluetooth Clicado");
+//   this.ble.enable().then(
+//     sucesso => {
+//       this.presentToast("Ativar Bluetooth Sucesso" + sucesso);
+//     },
+//     error => {
+//       this.presentToast("Ativar Bluetooth Erro " + error);
+//     }
+//   );
+// }
+
+// async buscarBluetooth() {
+//   const loader = await this.createLoader();
+//   await loader.present();
+//   this.listOfBluetoothDevices = [];
+
+//   this.ble.scan([], 8).subscribe(
+//     success => {
+//       loader.dismiss();
+//       this.presentToast("Obtive lista de Bluetooth com sucesso! " + success);
+//       console.log("Sucess on bluetooth scan");
+//       console.log(success);
+//       this.listOfBluetoothDevices.push(success);
+//       this.changeDetector.detectChanges();
+//     },
+//     error => {
+//       loader.dismiss();
+//       this.presentToast(error);
+//       console.log(error);
+//       this.presentToast("Não obtive lista de Bluetooth. " + error);
+//       return error;
+//     }
+//   );
+// }
+
+// async conectarComDispositivo(address: string) {
+//   const loader = await this.createLoader();
+//   // loader.present();
+//   this.presentToast("Conectando com " + address);
+//   this.router.navigate(["dispositivo"]);
+//   // this.ble.connect(address).subscribe(
+//   //   success => {
+//   //     loader.dismiss();
+//   //     console.log("sucesso" + success);
+//   //     this.presentToast(success);
+//   //   },
+//   //   async error => {
+//   //     loader.dismiss();
+//   //     console.log("erro" + error);
+//   //     this.presentToast(error);
+//   //   }
+//   // );
+// }
