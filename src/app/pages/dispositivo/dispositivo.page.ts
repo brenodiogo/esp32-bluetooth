@@ -11,6 +11,7 @@ import { ToastController, LoadingController } from "@ionic/angular";
 export class DispositivoPage implements OnInit {
   connectedDevice: string;
   ligaDesliga: boolean = false;
+  mostrarBotaoPrincipal: boolean = true;
 
   constructor(
     private bluetoothService: BluetoothService,

@@ -53,6 +53,11 @@ export class HomePage {
     });
   }
 
+  pularBluetooth() {
+    this.bluetoothService.setConnectedDevice("qualquercoisa");
+    this.router.navigate(["dispositivo"]);
+  }
+
   async conectarComDispositivo(address: string) {
     const loader = await this.createLoader();
     // loader.present();

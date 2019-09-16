@@ -4,12 +4,25 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [hidden]="mostrarBotaoPrincipal">
   {{ connectedDevice }}
 
+  <ion-button expand="block" (click)="conectarDispositivo()"
+    >conectarDispositivo()</ion-button
+  >
+  <ion-button expand="block" (click)="testarConexao()"
+    >testarConexao()</ion-button
+  >
+  <ion-button expand="block" (click)="escreverDados()"
+    >escreverDados()</ion-button
+  >
+  <!-- <ion-button expand="block" (click)="escreverDadosComoBuffer()">escreverDados()</ion-button> -->
+</ion-content>
 
-  <ion-button expand="block" (click)="conectarDispositivo()">conectarDispositivo()</ion-button>
-  <ion-button expand="block" (click)="testarConexao()">testarConexao()</ion-button>
-  <ion-button expand="block" (click)="escreverDados()">escreverDados()</ion-button>
-  <ion-button expand="block" (click)="escreverDadosComoBuffer()">escreverDados()</ion-button>
+<ion-content [hidden]="!mostrarBotaoPrincipal" no-padding>
+  <ion-item (click)="escreverDados()" class="full-height" no-padding>
+    <div class="full-height">
+      <img src="/assets/img/onbutton2.png" class="center-vertical" />
+    </div>
+  </ion-item>
 </ion-content>
