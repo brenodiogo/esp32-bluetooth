@@ -11,7 +11,8 @@ import { ToastController, LoadingController } from "@ionic/angular";
 export class DispositivoPage implements OnInit {
   connectedDevice: string;
   ligaDesliga: boolean = false;
-  mostrarBotaoPrincipal: boolean = true;
+  mostrarBotaoPrincipal: boolean = false;
+  bombaEstaLigada: boolean = false;
 
   constructor(
     private bluetoothService: BluetoothService,
@@ -33,6 +34,7 @@ export class DispositivoPage implements OnInit {
         console.log("sucesso em conexão");
         console.log(success);
         this.presentToast(success);
+        this.mostrarBotaoPrincipal = true;
       },
       error => {
         loader.dismiss();
@@ -45,25 +47,35 @@ export class DispositivoPage implements OnInit {
   }
 
   async escreverDados() {
+    this.bombaEstaLigada = !this.bombaEstaLigada;
     // this.ligaDesliga = !this.ligaDesliga;
     const loader = await this.createLoader();
     // let message = this.ligaDesliga ? "ligar" : "desligar";
     loader.present();
     this.bluetoothSerial.write("1").then(
-      success => {
+      async success => {
         loader.dismiss();
         this.presentToast("Comando ligar enviado");
         console.log("Comando 1 enviado.");
         console.log(success);
+        await this.timeout(500);
+        this.bombaEstaLigada = !this.bombaEstaLigada;
       },
-      error => {
+      async error => {
         loader.dismiss();
+        // this.bombaEstaLigada = !this.bombaEstaLigada;
         this.presentToast("Erro ao enviar mensagem. Erro: " + error);
         console.error("Erro ao enviar mensagem. Erro: " + error);
         console.error(error);
+        await this.timeout(500);
+        this.bombaEstaLigada = !this.bombaEstaLigada;
       }
     );
   }
+
+  timeout(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
   // async escreverDados() {
   //   this.ligaDesliga = !this.ligaDesliga;
