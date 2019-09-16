@@ -44,30 +44,51 @@ export class DispositivoPage implements OnInit {
   }
 
   async escreverDados() {
-    this.ligaDesliga = !this.ligaDesliga;
+    // this.ligaDesliga = !this.ligaDesliga;
     const loader = await this.createLoader();
-    let message = this.ligaDesliga ? "ligar" : "desligar";
+    // let message = this.ligaDesliga ? "ligar" : "desligar";
     loader.present();
-    this.bluetoothSerial.write(message).then(
+    this.bluetoothSerial.write("1").then(
       success => {
         loader.dismiss();
-        this.presentToast("Comando enviado: " + message);
-        console.log("Comando enviado: " + message);
-        console.log(message);
+        this.presentToast("Comando ligar enviado");
+        console.log("Comando 1 enviado.");
         console.log(success);
       },
       error => {
         loader.dismiss();
-        this.presentToast(
-          "Erro ao enviar mensagem: " + message + " . Erro: " + error
-        );
-        console.error(
-          "Erro ao enviar mensagem: " + message + " . Erro: " + error
-        );
+        this.presentToast("Erro ao enviar mensagem. Erro: " + error);
+        console.error("Erro ao enviar mensagem. Erro: " + error);
         console.error(error);
       }
     );
   }
+
+  // async escreverDados() {
+  //   this.ligaDesliga = !this.ligaDesliga;
+  //   const loader = await this.createLoader();
+  //   let message = this.ligaDesliga ? "ligar" : "desligar";
+  //   loader.present();
+  //   this.bluetoothSerial.write(message).then(
+  //     success => {
+  //       loader.dismiss();
+  //       this.presentToast("Comando enviado: " + message);
+  //       console.log("Comando enviado: " + message);
+  //       console.log(message);
+  //       console.log(success);
+  //     },
+  //     error => {
+  //       loader.dismiss();
+  //       this.presentToast(
+  //         "Erro ao enviar mensagem: " + message + " . Erro: " + error
+  //       );
+  //       console.error(
+  //         "Erro ao enviar mensagem: " + message + " . Erro: " + error
+  //       );
+  //       console.error(error);
+  //     }
+  //   );
+  // }
 
   async escreverDadosComoBuffer() {
     // Typed Array
@@ -76,7 +97,6 @@ export class DispositivoPage implements OnInit {
     data[1] = 0x42;
     data[2] = 0x43;
     data[3] = 0x44;
-    
 
     // Array Buffer
     this.ligaDesliga = !this.ligaDesliga;
