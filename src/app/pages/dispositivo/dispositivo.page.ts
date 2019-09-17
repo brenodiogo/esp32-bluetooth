@@ -13,6 +13,7 @@ export class DispositivoPage implements OnInit {
   ligaDesliga: boolean = false;
   mostrarBotaoPrincipal: boolean = false;
   bombaEstaLigada: boolean = false;
+  velocidade: number = 2000;
 
   constructor(
     private bluetoothService: BluetoothService,
@@ -58,7 +59,7 @@ export class DispositivoPage implements OnInit {
         this.presentToast("Comando ligar enviado");
         console.log("Comando 1 enviado.");
         console.log(success);
-        await this.timeout(500);
+        await this.timeout(this.velocidade);
         this.bombaEstaLigada = !this.bombaEstaLigada;
       },
       async error => {
@@ -67,7 +68,8 @@ export class DispositivoPage implements OnInit {
         this.presentToast("Erro ao enviar mensagem. Erro: " + error);
         console.error("Erro ao enviar mensagem. Erro: " + error);
         console.error(error);
-        await this.timeout(500);
+        await this.timeout(this.velocidade);
+        // console.log("Timeout: " +this.velocidade);
         this.bombaEstaLigada = !this.bombaEstaLigada;
       }
     );
